@@ -5,7 +5,7 @@ sequenceDiagram
 
     browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
     activate server
-    server-->>broswer: responds with status code 302
+    server-->>browser: responds with status code 302
     deactivate server
 
     Note right of browser: status code 302 asks browser to perform a new HTTP GET request defined in the header's Location which is "/exampleapp/notes"
