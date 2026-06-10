@@ -1,5 +1,4 @@
-sequenceDiagram
-
+```mermaid
     participant browser
     participant server
 
@@ -9,4 +8,4 @@ sequenceDiagram
     activate server
     server-->>broswer: responds with status code 201 and message "note created"
     deactivate server
-
+```

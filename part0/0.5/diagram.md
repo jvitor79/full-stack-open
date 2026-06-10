@@ -1,4 +1,4 @@
-sequenceDiagram
+```mermaid
 
     participant browser
     participant server
@@ -26,3 +26,4 @@ sequenceDiagram
     deactivate server
 
     Note right of browser: The browser executes the redrawNotes function that renders the notes 
+```
