@@ -1,18 +1,19 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import personService from './services/persons'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ]) 
+  const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+
+  useEffect(() => {
+    personService.getAll()
+      .then(data => setPersons(data))
+  }, [])
 
 
   const handleAddPerson = (event) => {
@@ -25,13 +26,25 @@ const App = () => {
       return
     }
 
-    if (persons.find(person => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`)
+    const existingPerson = persons.find(person => person.name === newName)
+    if (existingPerson) {
+      if (existingPerson.number !== newNumber) {
+        if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+          personService.update(existingPerson.id, { name: newName, number: newNumber })
+            .then(data => setPersons(persons.map(p => p.id === existingPerson.id ? data : p)))
+        }
+      } else {
+        alert(`${newName} is already added to phonebook`)
+      }
+
       setNewName('')
       setNewNumber('')
       return
     }
-    setPersons(persons.concat({ id: persons.length + 1, name: newName, number: newNumber }))
+
+    personService.create({ name: newName, number: newNumber })
+      .then(data => setPersons(persons.concat(data)))
+
     setNewName('')
     setNewNumber('')
   }
